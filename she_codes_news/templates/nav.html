@@ -1,6 +1,19 @@
 <nav>
     <a href="{% url 'news:index' %}">Home</a>
-    <a href="#">username</a>
+    <!-- <a href="#">username</a>
     <a href="#">Logout</a>
-    <a href="#">Login</a>
+    <a href="#">Login</a> -->
+    {% if request.user.is_authenticated %}
+        <a href="#">{{ user.username }}</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+    
 </nav>
+
+<!-- special variables
+    request.user.is_authenticated checks if user accessing page is logged in.
+    If they are, we can get their username with user.username-->
+
+
