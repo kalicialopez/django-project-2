@@ -27,3 +27,7 @@ class AddStoryView(generic.CreateView): # CreateView is a generic view that allo
     context_object_name = 'storyform' # what variable name should be used to store that form under in the template
     template_name = 'news/createStory.html' # which template the view should use
     success_url = reverse_lazy('news:index') # where the user should be redirected to after successfully submitting the form
+    
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
