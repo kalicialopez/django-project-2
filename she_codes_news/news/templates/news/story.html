@@ -8,13 +8,54 @@
 
 {% block content %}
 
-<div id="story-wrapper">
-    <h2>{{ story.title }}</h2>
-    <h4>{{ story.author }}</h4>
-    <div id="story-content">
-        <img src="{% static '/news/images/placeholder-5.jpg' %}">
-        {{ story.content|linebreaks }}
+<main>
+    <!------------ Story ----------->
+    <div id="story-wrapper">
+        <h2>{{ story.title }}</h2>
+        <h4>{{ story.tagline }}</h4>
+        <h4>Category: {{ story.category }}</h4>
+
+        {% if request.user == story.author %}
+            <p>Originally published: {{ story.pub_date|date:'d M y, h.i a'}}</p>
+            <p>Last edited: {{ story.mod_date|date:'d M y, h.i a'}}</p>
+            <a class="" href="{% url 'news:editStory' story.id %}">Edit your Review</a>
+            <a class="" href="{% url 'news:deleteStory' story.id %}">Delete your Review</a>
+        {% else %}
+            <p>Published By: <a href="">{{ story.author }}</a>
+            <p>Originally published: {{ story.pub_date|date:'d M y, h.i a' }}</p>
+            <p>Last modified: {{ story.pub_date|date:'d M y, h.i a' }}</p>
+        {% endif %}
+    
+        <div id="story-content">
+            <img alt="user story image" src="{{story.image}}">
+            {{ story.content|linebreaks }}
+        </div>
     </div>
-</div>
+
+    <!------------ Comments ----------->
+    <div id="comment-wrapper">
+        <h3>Comments</h3>
+        {% if request.user.is_authenticated %}
+        <form id="comment-form" method="POST" action="{% url 'news:addComment' story.id %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="submit-button" type="submit" value="Add comment">
+        </form>
+        {% else %}
+            <p><a href="{% url 'login' %}">Log in</a> to add a comment.</p>
+            {% comment "optional create account" %}
+            <!-- <p>Don't have an account?<a href="{% url 'create-account' %}">Create an account</a>here!</p>         -->
+            {% endcomment %}
+        {% endif %}
+        
+        {% if story.comments.count %}
+            {% for comment in story.comments.all %}
+            {% include "./commentCard.html" with comment=comment %}
+        {% endfor %}
+        {% else %}
+            <p>No comments for this story yet.</p>
+        {% endif %}
+    </div>
+</main>
 
 {% endblock %}

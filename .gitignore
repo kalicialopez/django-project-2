@@ -2,3 +2,11 @@ venv/*
 __pycache__/
 *.sqlite3
 *.vscode
+*.notes
+
+# taken from https://gist.github.com/lohenyumnam/2b127b9c3d1435dc12a33613c44e6308
+echo ".DS_Store" >> ~/.gitignore_global
+echo "._.DS_Store" >> ~/.gitignore_global
+echo "**/.DS_Store" >> ~/.gitignore_global
+echo "**/._.DS_Store" >> ~/.gitignore_global
+git config --global core.excludesfile ~/.gitignore_global
